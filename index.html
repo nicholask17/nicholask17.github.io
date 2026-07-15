@@ -60,24 +60,11 @@ title: Home
 <!-- 3. Dynamic Article Grid -->
 <div class="site-sections">
   <ul class="post-list">
-    {%- comment -%} Combine posts AND specific pages {%- endcomment -%}
-    {% assign all_items = site.posts | concat: site.pages %}
-    {% assign display_items = "" | split: "" %}
-
-    {% for item in all_items %}
-      {%- comment -%} Only include pages that have a gui_folder defined {%- endcomment -%}
-      {% if item.gui_folder %}
-        {% assign display_items = display_items | push: item %}
-      {% endif %}
-    {% endfor %}
-
-    {% assign sorted_items = display_items | sort: "gui_order" %}
-
-    {% for item in sorted_items %}
-      {% assign folder_class = item.gui_folder | default: 'uncategorized' | slugify %}
-      {% assign subfolder_class = item.gui_subfolder | default: 'none' | slugify %}
-      
-      <li class="post-card" data-folder="{{ folder_class }}" data-subfolder="{{ subfolder_class }}">
+  {% assign display_items = site.posts | concat: site.pages %}
+  
+  {% for item in display_items %}
+    {% if item.gui_folder %}
+      <li class="post-card" data-folder="{{ item.gui_folder | slugify }}" data-subfolder="{{ item.gui_subfolder | default: 'none' | slugify }}">
         <div class="post-card-header">
           <span class="post-date">{{ item.date | date: "%b %-d, %Y" }}</span>
           <div class="card-badges">
@@ -89,8 +76,9 @@ title: Home
           <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
         </h2>
       </li>
-    {% endfor %}
-  </ul>
+    {% endif %}
+  {% endfor %}
+</ul>
   
   <div id="no-results-message" style="display: none; text-align: center; color: #71717a; margin-top: 40px;">
     No posts found matching the selected combination.
