@@ -1,0 +1,110 @@
+---
+layout: default
+---
+<article class="post">
+  <header class="post-header">
+    <!-- Breadcrumbs -->
+    <nav class="post-breadcrumbs" aria-label="Breadcrumb">
+      <a href="{{ '/' | relative_url }}" class="breadcrumb-link">Home</a>
+      {% if page.gui_folder %}
+        <span class="breadcrumb-separator">/</span>
+        <a href="{{ '/' | relative_url }}?folder={{ page.gui_folder | slugify }}" class="breadcrumb-link">{{ page.gui_folder }}</a>
+      {% endif %}
+      {% if page.gui_subfolder %}
+        <span class="breadcrumb-separator">/</span>
+        <a href="{{ '/' | relative_url }}?folder={{ page.gui_folder | slugify }}&subfolder={{ page.gui_subfolder | slugify }}" class="breadcrumb-link">{{ page.gui_subfolder }}</a>
+      {% endif %}
+    </nav>
+    <h1 class="post-title">{{ page.title | escape }}</h1>
+  </header>
+
+  <!-- Password Prompt UI -->
+  <div id="password-gate" class="password-prompt-container">
+    <p>🔑 This post is password-protected. Please enter the password to view its contents:</p>
+    <div class="password-form">
+      <input type="password" id="post-password" placeholder="Enter Password" onkeypress="handleKeyPress(event)" />
+      <button onclick="decryptContent()" class="filter-btn active" style="padding: 10px 20px;">Unlock</button>
+    </div>
+    <p id="password-error" class="error-msg" style="display: none;">Incorrect password. Please try again.</p>
+  </div>
+
+  <!-- Hidden Encrypted Data Holder -->
+  <div id="encrypted-content" style="display: none;">{{ content }}</div>
+
+  <!-- Target container for Decrypted content -->
+  <div id="decrypted-content" class="post-content" style="display: none;"></div>
+</article>
+
+<!-- CryptoJS Library for secure AES Decryption -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+<script>
+  function handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      decryptContent();
+    }
+  }
+
+  function decryptContent() {
+    const password = document.getElementById('post-password').value;
+    const encryptedData = document.getElementById('encrypted-content').innerHTML.trim();
+    const errorEl = document.getElementById('password-error');
+
+    try {
+      // Attempt AES Decryption
+      const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, password);
+      const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+
+      if (decryptedText && decryptedText.length > 0) {
+        // Success! Hide the gate, show the content
+        document.getElementById('password-gate').style.display = 'none';
+        
+        const contentEl = document.getElementById('decrypted-content');
+        contentEl.innerHTML = decryptedText;
+        contentEl.style.display = 'block';
+      } else {
+        throw new Error("Invalid decryption output");
+      }
+    } catch (err) {
+      // Fail! Clear input and alert user
+      errorEl.style.display = 'block';
+      document.getElementById('post-password').value = '';
+    }
+  }
+</script>
+
+<style>
+  .password-prompt-container {
+    max-width: 450px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fdfdfd;
+    border: 1px solid #e4e4e7;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .password-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+  }
+  #post-password {
+    padding: 10px;
+    border: 1px solid #e4e4e7;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+    width: 60%;
+    transition: border-color 0.15s;
+  }
+  #post-password:focus {
+    border-color: #3b82f6;
+  }
+  .error-msg {
+    color: #ef4444;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 15px;
+  }
+</style>
