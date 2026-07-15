@@ -5,3 +5,4 @@ markdown: kramdown
 kramdown:
   math_engine: mathjax
 common-exts: true
+future: true
