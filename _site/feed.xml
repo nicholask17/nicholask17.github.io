@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-07-16T00:59:58+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">__jk__’s blogs</title><subtitle>random blogs</subtitle><entry><title type="html">Testing</title><link href="http://localhost:4000/2026/07/16/testing.html" rel="alternate" type="text/html" title="Testing" /><published>2026-07-16T00:00:00+08:00</published><updated>2026-07-16T00:00:00+08:00</updated><id>http://localhost:4000/2026/07/16/testing</id><content type="html" xml:base="http://localhost:4000/2026/07/16/testing.html"><![CDATA[<p>U2FsdGVkX1/CYCPjd04ip8Lwix2s6KHjJlh3mawiUTTF3tTPvfpvkIdi4xFTI3aEz2ZmY6gYZSyr8Gs+t5SlWHMPiS/6/bB6b7rNjakfu4Jrt6ZJUJSoIAZnfaLXf58bc+fMKOs7xuo4Ge2cMNjAABDiTekmcf03EwIxGZ4wjjU=</p>]]></content><author><name></name></author><summary type="html"><![CDATA[U2FsdGVkX1/CYCPjd04ip8Lwix2s6KHjJlh3mawiUTTF3tTPvfpvkIdi4xFTI3aEz2ZmY6gYZSyr8Gs+t5SlWHMPiS/6/bB6b7rNjakfu4Jrt6ZJUJSoIAZnfaLXf58bc+fMKOs7xuo4Ge2cMNjAABDiTekmcf03EwIxGZ4wjjU=]]></summary></entry><entry><title type="html">Elegant Math Expressions</title><link href="http://localhost:4000/2026/07/15/math-test.html" rel="alternate" type="text/html" title="Elegant Math Expressions" /><published>2026-07-15T00:00:00+08:00</published><updated>2026-07-15T00:00:00+08:00</updated><id>http://localhost:4000/2026/07/15/math-test</id><content type="html" xml:base="http://localhost:4000/2026/07/15/math-test.html"><![CDATA[<p>Here is some inline math: $f(x) = \int_{-\infty}^{\infty} \hat{f}(\xi) e^{2 \pi i x \xi} d\xi$ to show Fourier transforms in standard text flow.</p>
+
+<p>And here is a display equation centered on its own line:</p>
+
+\[\mathbf{A} = \begin{bmatrix} a &amp; b \\ c &amp; d \end{bmatrix}\]
+
+<p>You can even write complex logic:</p>
+
+\[\lim_{n \to \infty} \left( 1 + \frac{1}{n} \right)^n = e\]]]></content><author><name></name></author><summary type="html"><![CDATA[Here is some inline math: $f(x) = \int_{-\infty}^{\infty} \hat{f}(\xi) e^{2 \pi i x \xi} d\xi$ to show Fourier transforms in standard text flow.]]></summary></entry><entry><title type="html">Algorithmic Complexity &amp;amp; Matrix Properties</title><link href="http://localhost:4000/2026/07/15/my-first-post.html" rel="alternate" type="text/html" title="Algorithmic Complexity &amp;amp; Matrix Properties" /><published>2026-07-15T00:00:00+08:00</published><updated>2026-07-15T00:00:00+08:00</updated><id>http://localhost:4000/2026/07/15/my-first-post</id><content type="html" xml:base="http://localhost:4000/2026/07/15/my-first-post.html"><![CDATA[<p>When designing efficient algorithms, we need a mathematical framework to describe their performance bounds. Today we will look at analyzing a simple divide-and-conquer strategy.</p>
+
+<p>For a deeper dive into formal proofs, check out the <a href="https://ocw.mit.edu/courses/introduction-to-algorithms-fall-2011/">MIT Introduction to Algorithms Course</a> or browse the excellent collections on <a href="https://www.geeksforgeeks.org/">GeeksforGeeks</a>.</p>
+
+<hr />
+
+<h3 id="the-mathematical-model">The Mathematical Model</h3>
+
+<p>Suppose we have a recursive recurrence relation for an algorithm’s runtime $T(n)$. We can write this relation as:</p>
+
+\[T(n) = 2T\left(\frac{n}{2}\right) + O(n)\]
+
+<p>Using the <strong>Master Theorem</strong>, we can determine the asymptotic bound. If we match this to the general form $T(n) = aT(n/b) + f(n)$, we identify:</p>
+
+<ul>
+  <li>$a = 2$</li>
+  <li>$b = 2$</li>
+  <li>$f(n) = O(n^1) \implies d = 1$</li>
+</ul>
+
+<p>Since $\log_b(a) = \log_2(2) = 1$, which is equal to $d$, we fall into the critical case where the complexity is:</p>
+
+\[T(n) = \Theta(n \log n)\]
+
+<hr />
+
+<h3 id="complexity-classification-table">Complexity Classification Table</h3>
+
+<p>Here is a quick reference table showing common recurrence behaviors and their resulting complexity classes:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Case</th>
+      <th style="text-align: left">Recurrence</th>
+      <th style="text-align: left">Complexity Class</th>
+      <th style="text-align: left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Linear Search</strong></td>
+      <td style="text-align: left">$T(n) = T(n-1) + O(1)$</td>
+      <td style="text-align: left">$O(n)$</td>
+      <td style="text-align: left">Scans elements one by one</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Binary Search</strong></td>
+      <td style="text-align: left">$T(n) = T(n/2) + O(1)$</td>
+      <td style="text-align: left">$O(\log n)$</td>
+      <td style="text-align: left">Divides problem size in half each step</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Merge Sort</strong></td>
+      <td style="text-align: left">$T(n) = 2T(n/2) + O(n)$</td>
+      <td style="text-align: left">$\Theta(n \log n)$</td>
+      <td style="text-align: left">Divides in half, linear merge work</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Strassen’s Multiplication</strong></td>
+      <td style="text-align: left">$T(n) = 7T(n/2) + O(n^2)$</td>
+      <td style="text-align: left">$O(n^{\log_2 7}) \approx O(n^{2.81})$</td>
+      <td style="text-align: left">Sub-cubic matrix multiplication</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h3 id="implementation-in-c">Implementation in C++</h3>
+
+<p>Here is how we can implement a classic divide-and-conquer method (like the merge step of Merge Sort) that runs within this precise $\Theta(n \log n)$ time complexity bound:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span>
+<span class="c1">// Merges two sorted subarrays into a single sorted array</span>
+<span class="kt">void</span> <span class="nf">merge</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">arr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">left</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mid</span><span class="p">,</span> <span class="kt">int</span> <span class="n">right</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n1</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="n">left</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">right</span> <span class="o">-</span> <span class="n">mid</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">L</span><span class="p">(</span><span class="n">n1</span><span class="p">),</span> <span class="n">R</span><span class="p">(</span><span class="n">n2</span><span class="p">);</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">left</span> <span class="o">+</span> <span class="n">i</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="n">R</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">j</span><span class="p">];</span>
+
+    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">left</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">R</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span>
+            <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">];</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">j</span><span class="o">++</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="p">)</span> <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">];</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">)</span> <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">j</span><span class="o">++</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p><strong>Performance Note:</strong> The space complexity of this implementation is $O(n)$ due to the temporary vectors <code class="language-plaintext highlighter-rouge">L</code> and <code class="language-plaintext highlighter-rouge">R</code> created during the merge phase.</p>
+</blockquote>]]></content><author><name></name></author><summary type="html"><![CDATA[When designing efficient algorithms, we need a mathematical framework to describe their performance bounds. Today we will look at analyzing a simple divide-and-conquer strategy.]]></summary></entry><entry><title type="html">Elegant Math Expressions</title><link href="http://localhost:4000/2026/07/15/test1.html" rel="alternate" type="text/html" title="Elegant Math Expressions" /><published>2026-07-15T00:00:00+08:00</published><updated>2026-07-15T00:00:00+08:00</updated><id>http://localhost:4000/2026/07/15/test1</id><content type="html" xml:base="http://localhost:4000/2026/07/15/test1.html"><![CDATA[<p>Here is some inline math: $f(x) = \int_{-\infty}^{\infty} \hat{f}(\xi) e^{2 \pi i x \xi} d\xi$ to show Fourier transforms in standard text flow.</p>
+
+<p>And here is a display equation centered on its own line:</p>
+
+\[\mathbf{A} = \begin{bmatrix} a &amp; b \\ c &amp; d \end{bmatrix}\]
+
+<p>You can even write complex logic:</p>
+
+\[\lim_{n \to \infty} \left( 1 + \frac{1}{n} \right)^n = e\]]]></content><author><name></name></author><summary type="html"><![CDATA[Here is some inline math: $f(x) = \int_{-\infty}^{\infty} \hat{f}(\xi) e^{2 \pi i x \xi} d\xi$ to show Fourier transforms in standard text flow.]]></summary></entry></feed>

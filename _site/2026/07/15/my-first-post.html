@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <style>
+  /* Breadcrumb Navigation Styling */
+  .post-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 24px;
+    color: #71717a;
+  }
+
+  .breadcrumb-link {
+    color: #3b82f6;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .breadcrumb-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+
+  .breadcrumb-separator {
+    color: #d4d4d8;
+    user-select: none;
+  }
+
+  .breadcrumb-current {
+    color: #71717a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Algorithmic Complexity &amp; Matrix Properties | jk’s blogs</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Algorithmic Complexity &amp; Matrix Properties" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="When designing efficient algorithms, we need a mathematical framework to describe their performance bounds. Today we will look at analyzing a simple divide-and-conquer strategy." />
+<meta property="og:description" content="When designing efficient algorithms, we need a mathematical framework to describe their performance bounds. Today we will look at analyzing a simple divide-and-conquer strategy." />
+<link rel="canonical" href="http://localhost:4000/2026/07/15/my-first-post.html" />
+<meta property="og:url" content="http://localhost:4000/2026/07/15/my-first-post.html" />
+<meta property="og:site_name" content="jk’s blogs" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-07-15T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Algorithmic Complexity &amp; Matrix Properties" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2026-07-15T00:00:00+08:00","datePublished":"2026-07-15T00:00:00+08:00","description":"When designing efficient algorithms, we need a mathematical framework to describe their performance bounds. Today we will look at analyzing a simple divide-and-conquer strategy.","headline":"Algorithmic Complexity &amp; Matrix Properties","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2026/07/15/my-first-post.html"},"url":"http://localhost:4000/2026/07/15/my-first-post.html"}</script>
+<!-- End Jekyll SEO tag -->
+<!-- Correctly resolved theme CSS path -->
+  <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="__jk__&apos;s blogs" /><!-- Direct KaTeX Setup -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ]
+          });">
+  </script>
+</head><body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">__jk__&#39;s blogs</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/">Home</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+    <!-- 1. Interactive Breadcrumb Navigation -->
+    <nav class="post-breadcrumbs" aria-label="Breadcrumb">
+      <a href="/" class="breadcrumb-link">Home</a>
+      
+      
+        <span class="breadcrumb-separator">/</span>
+        <a href="/?folder=algorithms" class="breadcrumb-link">
+          Algorithms
+        </a>
+      
+      
+      
+        <span class="breadcrumb-separator">/</span>
+        <a href="/?folder=algorithms&subfolder=algo" class="breadcrumb-link">
+          algo
+        </a>
+      
+    </nav>
+
+    <h1 class="post-title p-name" itemprop="name headline">Algorithmic Complexity &amp; Matrix Properties</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2026-07-15T00:00:00+08:00" itemprop="datePublished">Jul 15, 2026
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>When designing efficient algorithms, we need a mathematical framework to describe their performance bounds. Today we will look at analyzing a simple divide-and-conquer strategy.</p>
+
+<p>For a deeper dive into formal proofs, check out the <a href="https://ocw.mit.edu/courses/introduction-to-algorithms-fall-2011/">MIT Introduction to Algorithms Course</a> or browse the excellent collections on <a href="https://www.geeksforgeeks.org/">GeeksforGeeks</a>.</p>
+
+<hr />
+
+<h3 id="the-mathematical-model">The Mathematical Model</h3>
+
+<p>Suppose we have a recursive recurrence relation for an algorithm’s runtime $T(n)$. We can write this relation as:</p>
+
+\[T(n) = 2T\left(\frac{n}{2}\right) + O(n)\]
+
+<p>Using the <strong>Master Theorem</strong>, we can determine the asymptotic bound. If we match this to the general form $T(n) = aT(n/b) + f(n)$, we identify:</p>
+
+<ul>
+  <li>$a = 2$</li>
+  <li>$b = 2$</li>
+  <li>$f(n) = O(n^1) \implies d = 1$</li>
+</ul>
+
+<p>Since $\log_b(a) = \log_2(2) = 1$, which is equal to $d$, we fall into the critical case where the complexity is:</p>
+
+\[T(n) = \Theta(n \log n)\]
+
+<hr />
+
+<h3 id="complexity-classification-table">Complexity Classification Table</h3>
+
+<p>Here is a quick reference table showing common recurrence behaviors and their resulting complexity classes:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Case</th>
+      <th style="text-align: left">Recurrence</th>
+      <th style="text-align: left">Complexity Class</th>
+      <th style="text-align: left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Linear Search</strong></td>
+      <td style="text-align: left">$T(n) = T(n-1) + O(1)$</td>
+      <td style="text-align: left">$O(n)$</td>
+      <td style="text-align: left">Scans elements one by one</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Binary Search</strong></td>
+      <td style="text-align: left">$T(n) = T(n/2) + O(1)$</td>
+      <td style="text-align: left">$O(\log n)$</td>
+      <td style="text-align: left">Divides problem size in half each step</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Merge Sort</strong></td>
+      <td style="text-align: left">$T(n) = 2T(n/2) + O(n)$</td>
+      <td style="text-align: left">$\Theta(n \log n)$</td>
+      <td style="text-align: left">Divides in half, linear merge work</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Strassen’s Multiplication</strong></td>
+      <td style="text-align: left">$T(n) = 7T(n/2) + O(n^2)$</td>
+      <td style="text-align: left">$O(n^{\log_2 7}) \approx O(n^{2.81})$</td>
+      <td style="text-align: left">Sub-cubic matrix multiplication</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h3 id="implementation-in-c">Implementation in C++</h3>
+
+<p>Here is how we can implement a classic divide-and-conquer method (like the merge step of Merge Sort) that runs within this precise $\Theta(n \log n)$ time complexity bound:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span>
+<span class="c1">// Merges two sorted subarrays into a single sorted array</span>
+<span class="kt">void</span> <span class="nf">merge</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">arr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">left</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mid</span><span class="p">,</span> <span class="kt">int</span> <span class="n">right</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n1</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="n">left</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">right</span> <span class="o">-</span> <span class="n">mid</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">L</span><span class="p">(</span><span class="n">n1</span><span class="p">),</span> <span class="n">R</span><span class="p">(</span><span class="n">n2</span><span class="p">);</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">left</span> <span class="o">+</span> <span class="n">i</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="n">R</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">j</span><span class="p">];</span>
+
+    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">left</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">R</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span>
+            <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">];</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">j</span><span class="o">++</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="p">)</span> <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">];</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&lt;</span> <span class="n">n2</span><span class="p">)</span> <span class="n">arr</span><span class="p">[</span><span class="n">k</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">j</span><span class="o">++</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p><strong>Performance Note:</strong> The space complexity of this implementation is $O(n)$ due to the temporary vectors <code class="language-plaintext highlighter-rouge">L</code> and <code class="language-plaintext highlighter-rouge">R</code> created during the merge phase.</p>
+</blockquote>
+
+  </div><a class="u-url" href="/2026/07/15/my-first-post.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">__jk__&#39;s blogs</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">__jk__&#39;s blogs</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>random blogs</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
