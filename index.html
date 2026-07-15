@@ -3,13 +3,117 @@ layout: default
 title: Home
 ---
 
-<ul>
+<!-- 1. Category Filter GUI Controls -->
+<div class="category-gui-container">
+  <button class="gui-tab active" onclick="filterCategory('all')">All Posts</button>
+  <button class="gui-tab" onclick="filterCategory('math')">Mathematics</button>
+  <button class="gui-tab" onclick="filterCategory('algorithms')">Algorithms</button>
+</div>
+
+<!-- 2. The Interactive Post Feed -->
+<ul class="post-list" id="post-feed">
   {% for post in site.posts %}
-    <li>
+    <!-- We dynamically label each item with its category class -->
+    <li class="post-item show-item {% for category in post.categories %}{{ category }}{% endfor %}">
       <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
       <h3>
         <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
       </h3>
+      {% if post.categories.size > 0 %}
+        <span class="gui-tag">{% for cat in post.categories %}{{ cat | upcase }}{% endfor %}</span>
+      {% endif %}
     </li>
   {% endfor %}
 </ul>
+
+<!-- 3. GUI Layout Styling -->
+<style>
+  /* Tab Bar Layout */
+  .category-gui-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 10px;
+  }
+
+  /* GUI Tabs styling */
+  .gui-tab {
+    background: #f4f4f5;
+    border: 1px solid #e4e4e7;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #3f3f46;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .gui-tab:hover {
+    background: #e4e4e7;
+  }
+
+  /* Highlighting the active Tab */
+  .gui-tab.active {
+    background: #18181b;
+    border-color: #18181b;
+    color: #ffffff;
+  }
+
+  /* Tag Badges next to posts */
+  .gui-tag {
+    display: inline-block;
+    background: #eff6ff;
+    color: #1e40af;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 5px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Filter Animation Settings */
+  .post-item {
+    display: none;
+    margin-bottom: 25px;
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+  }
+
+  .post-item.show-item {
+    display: block;
+    opacity: 1;
+  }
+</style>
+
+<!-- 4. Fast Local Filtering Logic -->
+<script>
+  function filterCategory(categoryName) {
+    // A. Manage active state styling on tabs
+    const tabs = document.querySelectorAll('.gui-tab');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    
+    // Find clicked tab and mark active
+    const clickedTab = Array.from(tabs).find(tab => 
+      tab.getAttribute('onclick').includes(`'${categoryName}'`)
+    );
+    if (clickedTab) clickedTab.classList.add('active');
+
+    // B. Filter the elements locally
+    const items = document.querySelectorAll('.post-item');
+    items.forEach(item => {
+      if (categoryName === 'all' || item.classList.contains(categoryName)) {
+        item.classList.add('show-item');
+      } else {
+        item.classList.remove('show-item');
+      }
+    });
+  }
+
+  // Set initial state
+  window.onload = function() {
+    filterCategory('all');
+  }
+</script>
