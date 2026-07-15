@@ -60,25 +60,33 @@ title: Home
 <!-- 3. Dynamic Article Grid -->
 <div class="site-sections">
   <ul class="post-list">
-    {% assign sorted_posts = site.posts | sort: "gui_order" %}
-    {% for post in sorted_posts %}
-      {% assign folder_class = post.gui_folder | default: 'uncategorized' | slugify %}
-      {% assign subfolder_class = post.gui_subfolder | default: 'none' | slugify %}
+    {%- comment -%} Combine posts AND specific pages {%- endcomment -%}
+    {% assign all_items = site.posts | concat: site.pages %}
+    {% assign display_items = "" | split: "" %}
+
+    {% for item in all_items %}
+      {%- comment -%} Only include pages that have a gui_folder defined {%- endcomment -%}
+      {% if item.gui_folder %}
+        {% assign display_items = display_items | push: item %}
+      {% endif %}
+    {% endfor %}
+
+    {% assign sorted_items = display_items | sort: "gui_order" %}
+
+    {% for item in sorted_items %}
+      {% assign folder_class = item.gui_folder | default: 'uncategorized' | slugify %}
+      {% assign subfolder_class = item.gui_subfolder | default: 'none' | slugify %}
       
       <li class="post-card" data-folder="{{ folder_class }}" data-subfolder="{{ subfolder_class }}">
         <div class="post-card-header">
-          <span class="post-date">{{ post.date | date: "%b %-d, %Y" }}</span>
+          <span class="post-date">{{ item.date | date: "%b %-d, %Y" }}</span>
           <div class="card-badges">
-            {% if post.gui_folder %}
-              <span class="badge folder-badge">{{ post.gui_folder }}</span>
-            {% endif %}
-            {% if post.gui_subfolder %}
-              <span class="badge subfolder-badge">{{ post.gui_subfolder }}</span>
-            {% endif %}
+            <span class="badge folder-badge">{{ item.gui_folder }}</span>
+            <span class="badge subfolder-badge">{{ item.gui_subfolder }}</span>
           </div>
         </div>
         <h2 class="post-card-title">
-          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
         </h2>
       </li>
     {% endfor %}
