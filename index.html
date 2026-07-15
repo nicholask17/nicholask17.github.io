@@ -1,194 +1,180 @@
 ---
 layout: default
-title: Home Dashboard
+title: File Explorer GUI
 ---
 
-<!-- 1. Category Quick-Filters -->
-<div class="category-gui-container">
-  <button class="gui-tab active" onclick="filterCategory('all')">Show All Sections</button>
-  <button class="gui-tab" onclick="filterCategory('math')">Math Track</button>
-  <button class="gui-tab" onclick="filterCategory('algorithms')">Algorithms Track</button>
+<div class="explorer-container">
+  <div class="explorer-header">
+    <span class="explorer-title">🗂️ Workspace Explorer (Auto-Generated)</span>
+  </div>
+
+  <div class="tree-root">
+    
+    <!-- 1. Fallback for uncategorized posts -->
+    {% assign loose_posts = "" | split: "," %}
+    
+    <!-- Grouping variables dynamically -->
+    {% assign grouped_posts = site.posts | group_by: "gui_folder" %}
+    
+    {% for folder_group in grouped_posts %}
+      {% if folder_group.name != "" and folder_group.name != nil %}
+        <!-- PARENT FOLDER -->
+        <div class="tree-folder">
+          <div class="folder-title" onclick="toggleFolder(this)">
+            <span class="folder-arrow">▼</span>
+            <span class="folder-icon">📁</span>
+            <strong>{{ folder_group.name }}</strong>
+          </div>
+          
+          <div class="folder-content">
+            {% assign subfolder_groups = folder_group.items | group_by: "gui_subfolder" %}
+            {% for subfolder in subfolder_groups %}
+              
+              <!-- SUBFOLDER -->
+              <div class="tree-folder subfolder">
+                <div class="folder-title" onclick="toggleFolder(this)">
+                  <span class="folder-arrow">▼</span>
+                  <span class="folder-icon">📁</span>
+                  <span>{{ subfolder.name | default: "Unsorted" }}</span>
+                </div>
+                <div class="folder-content">
+                  <ul class="tree-posts">
+                    {% assign sorted_items = subfolder.items | sort: "gui_order" %}
+                    {% for post in sorted_items %}
+                      <li class="tree-post-item">
+                        <span class="post-icon">📄</span>
+                        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+              
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    <!-- 2. Display posts with no designated folder directly in Root -->
+    <div class="root-files">
+      <ul class="tree-posts" style="padding-left: 10px;">
+        {% for post in site.posts %}
+          {% if post.gui_folder == nil %}
+            <li class="tree-post-item">
+              <span class="post-icon">📄</span>
+              <a href="{{ post.url | relative_url }}">{{ post.title }} <small style="color: #a1a1aa;">(Root File)</small></a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+
+  </div>
 </div>
 
-<!-- 2. Structured Subsections (Custom Order) -->
-<div id="gui-sections-wrapper">
-
-  <!-- ================= SUBSECTION A ================= -->
-  <section class="gui-section-block math" data-category="math">
-    <div class="section-header">
-      <span class="icon">📁</span>
-      <h2>Foundational Mathematics</h2>
-    </div>
-    <ul class="post-list">
-      {% assign sorted_posts = site.posts | sort: "gui_order" %}
-      {% for post in sorted_posts %}
-        {% if post.gui_section == "Foundational Mathematics" %}
-          <li class="post-item">
-            <span class="order-badge">#{{ post.gui_order }}</span>
-            <div class="post-info">
-              <h3><a class="post-link" href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-              <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-            </div>
-          </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-  </section>
-
-  <!-- ================= SUBSECTION B ================= -->
-  <section class="gui-section-block algorithms" data-category="algorithms">
-    <div class="section-header">
-      <span class="icon">📁</span>
-      <h2>Complexity & Analysis</h2>
-    </div>
-    <ul class="post-list">
-      {% assign sorted_posts = site.posts | sort: "gui_order" %}
-      {% for post in sorted_posts %}
-        {% if post.gui_section == "Complexity & Analysis" %}
-          <li class="post-item">
-            <span class="order-badge">#{{ post.gui_order }}</span>
-            <div class="post-info">
-              <h3><a class="post-link" href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-              <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-            </div>
-          </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-  </section>
-
-</div>
-
-<!-- 3. Local Dashboard Styling -->
 <style>
-  /* Category Tabs Bar */
-  .category-gui-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 35px;
-    border-bottom: 2px solid #f4f4f5;
-    padding-bottom: 12px;
-  }
-
-  .gui-tab {
-    background: #f4f4f5;
-    border: 1px solid #e4e4e7;
-    border-radius: 6px;
-    padding: 8px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #52525b;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .gui-tab:hover {
-    background: #e4e4e7;
-  }
-
-  .gui-tab.active {
-    background: #18181b;
-    border-color: #18181b;
-    color: #ffffff;
-  }
-
-  /* Subsection Folder Layout */
-  .gui-section-block {
+  .explorer-container {
     background: #ffffff;
     border: 1px solid #e4e4e7;
     border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 25px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 
-  .section-header {
+  .explorer-header {
+    background: #f4f4f5;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e4e4e7;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  .explorer-title {
+    font-weight: 600;
+    color: #27272a;
+    font-size: 14px;
+  }
+
+  .tree-root {
+    padding: 16px;
+  }
+
+  .tree-folder {
+    margin-bottom: 8px;
+  }
+
+  .subfolder {
+    margin-left: 20px;
+    margin-top: 6px;
+    border-left: 1px dashed #e4e4e7;
+    padding-left: 10px;
+  }
+
+  .folder-title {
     display: flex;
     align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid #f4f4f5;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-  }
-
-  .section-header h2 {
-    font-size: 18px;
-    font-weight: 700;
-    margin: 0;
+    gap: 6px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 4px;
+    user-select: none;
+    font-size: 14px;
     color: #18181b;
   }
 
-  .section-header .icon {
-    font-size: 18px;
-  }
-
-  /* Structured Post List */
-  .post-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .post-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 10px 0;
-    border-bottom: 1px dashed #f4f4f5;
-  }
-
-  .post-item:last-child {
-    border-bottom: none;
-  }
-
-  /* GUI Sorting Index Badge */
-  .order-badge {
+  .folder-title:hover {
     background: #f4f4f5;
+  }
+
+  .folder-arrow {
+    font-size: 10px;
     color: #71717a;
-    font-family: monospace;
-    font-weight: bold;
-    font-size: 11px;
-    min-width: 24px;
-    height: 24px;
-    border-radius: 4px;
+    transition: transform 0.2s ease;
+    display: inline-block;
+    width: 12px;
+  }
+
+  .tree-folder.collapsed > .folder-title > .folder-arrow {
+    transform: rotate(-90deg);
+  }
+
+  .tree-folder.collapsed > .folder-content {
+    display: none;
+  }
+
+  .folder-icon, .post-icon {
+    font-size: 16px;
+  }
+
+  .tree-posts {
+    list-style: none;
+    padding-left: 24px;
+    margin: 4px 0 10px 0;
+  }
+
+  .tree-post-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    border: 1px solid #e4e4e7;
+    gap: 8px;
+    padding: 4px 6px;
+    font-size: 13.5px;
   }
 
-  .post-info h3 {
-    margin: 0;
-    font-size: 15px;
+  .tree-post-item a {
+    color: #2563eb;
+    text-decoration: none;
   }
 
-  .post-info .post-meta {
-    font-size: 12px;
-    color: #a1a1aa;
+  .tree-post-item a:hover {
+    text-decoration: underline;
   }
 </style>
 
-<!-- 4. Controller Script -->
 <script>
-  function filterCategory(category) {
-    // Update active state on buttons
-    const tabs = document.querySelectorAll('.gui-tab');
-    tabs.forEach(tab => tab.classList.remove('active'));
-    
-    const clickedTab = Array.from(tabs).find(t => t.getAttribute('onclick').includes(`'${category}'`));
-    if (clickedTab) clickedTab.classList.add('active');
-
-    // Show/Hide section blocks dynamically
-    const sections = document.querySelectorAll('.gui-section-block');
-    sections.forEach(sec => {
-      if (category === 'all' || sec.getAttribute('data-category') === category) {
-        sec.style.display = 'block';
-        setTimeout(() => { sec.style.opacity = '1'; }, 10);
-      } else {
-        sec.style.opacity = '0';
-        sec.style.display = 'none';
-      }
-    });
+  function toggleFolder(element) {
+    const parentFolder = element.parentElement;
+    parentFolder.classList.toggle('collapsed');
   }
 </script>
