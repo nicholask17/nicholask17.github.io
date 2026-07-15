@@ -1,0 +1,47 @@
+---
+layout: default
+---
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+    <!-- 1. Interactive Breadcrumb Navigation -->
+    <nav class="post-breadcrumbs" aria-label="Breadcrumb">
+      <a href="{{ '/' | relative_url }}" class="breadcrumb-link">Home</a>
+      
+      {% if page.gui_folder %}
+        <span class="breadcrumb-separator">/</span>
+        <a href="{{ '/' | relative_url }}?folder={{ page.gui_folder | slugify }}" class="breadcrumb-link">
+          {{ page.gui_folder }}
+        </a>
+      {% endif %}
+      
+      {% if page.gui_subfolder %}
+        <span class="breadcrumb-separator">/</span>
+        <a href="{{ '/' | relative_url }}?folder={{ page.gui_folder | slugify }}&subfolder={{ page.gui_subfolder | slugify }}" class="breadcrumb-link">
+          {{ page.gui_subfolder }}
+        </a>
+      {% endif %}
+    </nav>
+
+    <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        {{ page.date | date: date_format }}
+      </time>
+      {%- if page.author -%}
+        • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ page.author }}</span></span>
+      {%- endif -%}</p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    {{ content }}
+  </div>
+
+  {%- if site.disqus.shortname -%}
+    {%- include disqus_comments.html -%}
+  {%- endif -%}
+
+  <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
+</article>

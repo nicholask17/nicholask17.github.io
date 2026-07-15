@@ -1,4 +1,41 @@
 <head>
+  <style>
+  /* Breadcrumb Navigation Styling */
+  .post-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 24px;
+    color: #71717a;
+  }
+
+  .breadcrumb-link {
+    color: #3b82f6;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .breadcrumb-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+
+  .breadcrumb-separator {
+    color: #d4d4d8;
+    user-select: none;
+  }
+
+  .breadcrumb-current {
+    color: #71717a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">

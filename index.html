@@ -220,18 +220,49 @@ title: Home
   let activeFolder = 'all';
   let activeSubfolder = 'all';
 
+  // 1. Read parameters from URL on load
+  function checkUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const folderParam = urlParams.get('folder');
+    const subfolderParam = urlParams.get('subfolder');
+
+    if (folderParam) {
+      activeFolder = folderParam;
+      updateButtonVisuals('folder', folderParam);
+      filterSubfolderButtons(folderParam);
+    }
+    
+    if (subfolderParam) {
+      activeSubfolder = subfolderParam;
+      updateButtonVisuals('subfolder', subfolderParam);
+    }
+
+    applyFilters();
+  }
+
   function setFolderFilter(folderVal) {
     activeFolder = folderVal;
     
-    // Maintain active visual states for folder buttons
+    // Clear URL query strings gracefully when filtering manually
+    const url = new URL(window.location);
+    url.searchParams.delete('folder');
+    url.searchParams.delete('subfolder');
+    window.history.pushState({}, '', url);
+
     updateButtonVisuals('folder', folderVal);
+    filterSubfolderButtons(folderVal);
+    resetSubfolderIfHidden();
     applyFilters();
   }
 
   function setSubfolderFilter(subfolderVal) {
     activeSubfolder = subfolderVal;
     
-    // Maintain active visual states for subfolder buttons
+    // Clear subfolder query string gracefully on manual click
+    const url = new URL(window.location);
+    url.searchParams.delete('subfolder');
+    window.history.pushState({}, '', url);
+
     updateButtonVisuals('subfolder', subfolderVal);
     applyFilters();
   }
@@ -247,6 +278,33 @@ title: Home
     });
   }
 
+  function filterSubfolderButtons(selectedFolder) {
+    const subfolderBtns = document.querySelectorAll('.filter-btn[data-filter-type="subfolder"]');
+    
+    subfolderBtns.forEach(btn => {
+      const val = btn.getAttribute('data-value');
+      if (val === 'all') return; 
+
+      const associatedFolders = btn.getAttribute('data-parent-folders').split(' ');
+      
+      if (selectedFolder === 'all' || associatedFolders.includes(selectedFolder)) {
+        btn.style.display = 'inline-block';
+      } else {
+        btn.style.display = 'none';
+      }
+    });
+  }
+
+  function resetSubfolderIfHidden() {
+    if (activeSubfolder === 'all') return;
+
+    const activeSubBtn = document.querySelector(`.filter-btn[data-filter-type="subfolder"][data-value="${activeSubfolder}"]`);
+    if (activeSubBtn && activeSubBtn.style.display === 'none') {
+      activeSubfolder = 'all';
+      updateButtonVisuals('subfolder', 'all');
+    }
+  }
+
   function applyFilters() {
     const cards = document.querySelectorAll('.post-card');
     let visibleCount = 0;
@@ -257,15 +315,12 @@ title: Home
 
       if (matchesFolder && matchesSubfolder) {
         card.style.display = 'block';
-        card.style.opacity = '1';
         visibleCount++;
       } else {
         card.style.display = 'none';
-        card.style.opacity = '0';
       }
     });
 
-    // Handle the "No results" case gracefully
     const noResults = document.getElementById('no-results-message');
     if (visibleCount === 0) {
       noResults.style.display = 'block';
@@ -273,4 +328,7 @@ title: Home
       noResults.style.display = 'none';
     }
   }
+
+  // Trigger URL parameter check as soon as index loads!
+  window.onload = checkUrlParams;
 </script>
