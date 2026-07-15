@@ -4,181 +4,273 @@ title: Home
 ---
 
 {%- comment -%}
-1. Dynamically extract all unique category folders from your posts
+1. Extract unique folders & subfolders dynamically
 {%- endcomment -%}
 {% assign folders = "" | split: "," %}
+{% assign subfolders = "" | split: "," %}
+
 {% for post in site.posts %}
   {% if post.gui_folder %}
     {% unless folders contains post.gui_folder %}
       {% assign folders = folders | push: post.gui_folder %}
     {% endunless %}
   {% endif %}
+  {% if post.gui_subfolder %}
+    {% unless subfolders contains post.gui_subfolder %}
+      {% assign subfolders = subfolders | push: post.gui_subfolder %}
+    {% endunless %}
+  {% endif %}
 {% endfor %}
 
-<!-- 2. Sticky Sub-Navigation Bar -->
-{% if folders.size > 0 %}
-<nav class="sticky-nav">
-  <div class="nav-links">
-    {% for folder in folders %}
-      <a href="#{{ folder | slugify }}" class="nav-link">{{ folder }}</a>
-    {% endfor %}
-    {% comment %} Check if there are any uncategorized posts to add a fallback link {% endcomment %}
-    {% assign has_uncategorized = false %}
-    {% for post in site.posts %}
-      {% unless post.gui_folder %}{% assign has_uncategorized = true %}{% endunless %}
-    {% endfor %}
-    {% if has_uncategorized %}
-      <a href="#uncategorized" class="nav-link">Unsorted</a>
-    {% endif %}
+<!-- 2. Interactive Navigation Filters -->
+<div class="filter-controls">
+  <!-- Parent Folder Filter Row -->
+  <div class="filter-row">
+    <span class="filter-label">Folder:</span>
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-filter-type="folder" data-value="all" onclick="setFolderFilter('all')">All Folders</button>
+      {% for folder in folders %}
+        <button class="filter-btn" data-filter-type="folder" data-value="{{ folder | slugify }}" onclick="setFolderFilter('{{ folder | slugify }}')">{{ folder }}</button>
+      {% endfor %}
+    </div>
   </div>
-</nav>
-{% endif %}
 
-<!-- 3. Main Content Sections -->
-<div class="site-sections">
-
-  {% for folder in folders %}
-    <section id="{{ folder | slugify }}" class="content-section">
-      <h2 class="section-title">{{ folder }}</h2>
-      <ul class="post-list">
-        {% assign folder_posts = site.posts | where: "gui_folder", folder | sort: "gui_order" %}
-        {% for post in folder_posts %}
-          <li class="post-item">
-            <span class="post-date">{{ post.date | date: "%b %-d, %Y" }}</span>
-            <h3 class="post-title-link">
-              <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-            </h3>
-            {% if post.gui_subfolder %}
-              <span class="subfolder-tag">{{ post.gui_subfolder }}</span>
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
-    </section>
-  {% endfor %}
-
-  <!-- Fallback section for posts without a designated folder -->
-  {% if has_uncategorized %}
-    <section id="uncategorized" class="content-section">
-      <h2 class="section-title">General Posts</h2>
-      <ul class="post-list">
-        {% for post in site.posts %}
-          {% unless post.gui_folder %}
-            <li class="post-item">
-              <span class="post-date">{{ post.date | date: "%b %-d, %Y" }}</span>
-              <h3 class="post-title-link">
-                <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-              </h3>
-            </li>
-          {% endunless %}
-        {% endfor %}
-      </ul>
-    </section>
-  {% endif %}
-
+  <!-- Subfolder Filter Row -->
+  <div class="filter-row subfolder-row">
+    <span class="filter-label">Subfolder:</span>
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-filter-type="subfolder" data-value="all" onclick="setSubfolderFilter('all')">All Subfolders</button>
+      {% for subfolder in subfolders %}
+        <button class="filter-btn" data-filter-type="subfolder" data-value="{{ subfolder | slugify }}" onclick="setSubfolderFilter('{{ subfolder | slugify }}')">{{ subfolder }}</button>
+      {% endfor %}
+    </div>
+  </div>
 </div>
 
-<!-- 4. Clean Website Styling -->
+<!-- 3. Dynamic Article Grid -->
+<div class="site-sections">
+  <ul class="post-list">
+    {% assign sorted_posts = site.posts | sort: "gui_order" %}
+    {% for post in sorted_posts %}
+      {% assign folder_class = post.gui_folder | default: 'uncategorized' | slugify %}
+      {% assign subfolder_class = post.gui_subfolder | default: 'none' | slugify %}
+      
+      <li class="post-card" data-folder="{{ folder_class }}" data-subfolder="{{ subfolder_class }}">
+        <div class="post-card-header">
+          <span class="post-date">{{ post.date | date: "%b %-d, %Y" }}</span>
+          <div class="card-badges">
+            {% if post.gui_folder %}
+              <span class="badge folder-badge">{{ post.gui_folder }}</span>
+            {% endif %}
+            {% if post.gui_subfolder %}
+              <span class="badge subfolder-badge">{{ post.gui_subfolder }}</span>
+            {% endif %}
+          </div>
+        </div>
+        <!-- Larger title format per request -->
+        <h2 class="post-card-title">
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </h2>
+      </li>
+    {% endfor %}
+  </ul>
+  
+  <div id="no-results-message" style="display: none; text-align: center; color: #71717a; margin-top: 40px;">
+    No posts found matching the selected combination.
+  </div>
+</div>
+
+<!-- 4. Stylesheet for clean look, readable hierarchy & larger titles -->
 <style>
-  html {
-    scroll-behavior: smooth; /* Smooth scrolling when clicking nav links */
-  }
-
-  /* Sticky Navigation Bar Styling */
-  .sticky-nav {
-    position: sticky;
-    top: 0;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid #e4e4e7;
-    padding: 12px 0;
-    margin-bottom: 40px;
-    z-index: 100;
-  }
-
-  .nav-links {
+  /* Filtering controls layout */
+  .filter-controls {
+    background: #fdfdfd;
+    border: 1px solid #e4e4e7;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 35px;
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+    gap: 12px;
   }
 
-  .nav-link {
-    color: #71717a;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 14px;
-    transition: color 0.2s ease;
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
   }
 
-  .nav-link:hover {
-    color: #18181b;
-  }
-
-  /* Content Sections Layout */
-  .content-section {
-    padding-top: 20px;
-    margin-bottom: 50px;
-    border-bottom: 1px solid #f4f4f5;
-  }
-
-  .section-title {
-    font-size: 22px;
+  .filter-label {
+    font-size: 13px;
     font-weight: 700;
-    color: #18181b;
-    margin-bottom: 20px;
-    letter-spacing: -0.5px;
+    color: #71717a;
+    min-width: 80px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  /* List of Articles styling */
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .filter-btn {
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3f3f46;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-btn:hover {
+    background: #f4f4f5;
+  }
+
+  .filter-btn.active {
+    background: #18181b;
+    border-color: #18181b;
+    color: #ffffff;
+  }
+
+  /* List Layout & Post Card UI with larger fonts */
   .post-list {
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-
-  .post-item {
     display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 14px 0;
-    border-top: 1px solid #fafafa;
+    flex-direction: column;
+    gap: 20px;
   }
 
-  .post-item:first-child {
-    border-top: none;
+  .post-card {
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 8px;
+    padding: 24px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
+  }
+
+  .post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .post-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
   }
 
   .post-date {
     font-size: 13px;
     color: #a1a1aa;
-    min-width: 90px;
+    font-weight: 500;
   }
 
-  .post-title-link {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-    flex-grow: 1;
+  .card-badges {
+    display: flex;
+    gap: 6px;
   }
 
-  .post-title-link a {
-    color: #2563eb;
-    text-decoration: none;
-    transition: color 0.1s ease;
-  }
-
-  .post-title-link a:hover {
-    color: #1d4ed8;
-    text-decoration: underline;
-  }
-
-  /* Subtle Category Tags */
-  .subfolder-tag {
-    background: #f4f4f5;
-    color: #52525b;
+  .badge {
     font-size: 11px;
     font-weight: 600;
-    padding: 4px 8px;
+    padding: 3px 8px;
     border-radius: 4px;
-    border: 1px solid #e4e4e7;
+  }
+
+  .folder-badge {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+  }
+
+  .subfolder-badge {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+
+  /* Target title element - scaled up */
+  .post-card-title {
+    margin: 0;
+    font-size: 24px; /* Increased font size */
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .post-card-title a {
+    color: #18181b;
+    text-decoration: none;
+  }
+
+  .post-card-title a:hover {
+    color: #2563eb;
   }
 </style>
+
+<!-- 5. Advanced Two-Dimensional Filtering Logic -->
+<script>
+  let activeFolder = 'all';
+  let activeSubfolder = 'all';
+
+  function setFolderFilter(folderVal) {
+    activeFolder = folderVal;
+    
+    // Maintain active visual states for folder buttons
+    updateButtonVisuals('folder', folderVal);
+    applyFilters();
+  }
+
+  function setSubfolderFilter(subfolderVal) {
+    activeSubfolder = subfolderVal;
+    
+    // Maintain active visual states for subfolder buttons
+    updateButtonVisuals('subfolder', subfolderVal);
+    applyFilters();
+  }
+
+  function updateButtonVisuals(type, value) {
+    const buttons = document.querySelectorAll(`.filter-btn[data-filter-type="${type}"]`);
+    buttons.forEach(btn => {
+      if (btn.getAttribute('data-value') === value) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  function applyFilters() {
+    const cards = document.querySelectorAll('.post-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const matchesFolder = (activeFolder === 'all' || card.getAttribute('data-folder') === activeFolder);
+      const matchesSubfolder = (activeSubfolder === 'all' || card.getAttribute('data-subfolder') === activeSubfolder);
+
+      if (matchesFolder && matchesSubfolder) {
+        card.style.display = 'block';
+        card.style.opacity = '1';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+        card.style.opacity = '0';
+      }
+    });
+
+    // Handle the "No results" case gracefully
+    const noResults = document.getElementById('no-results-message');
+    if (visibleCount === 0) {
+      noResults.style.display = 'block';
+    } else {
+      noResults.style.display = 'none';
+    }
+  }
+</script>

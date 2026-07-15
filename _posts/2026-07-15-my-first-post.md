@@ -1,9 +1,8 @@
 ---
 layout: post
 title: "Algorithmic Complexity & Matrix Properties"
-date: 2026-07-15
-gui_section: "Algorithms"
-gui_subsection: "algo"
+gui_folder: "Algorithms"
+gui_subfolder: "algo"
 ---
 
 When designing efficient algorithms, we need a mathematical framework to describe their performance bounds. Today we will look at analyzing a simple divide-and-conquer strategy.
