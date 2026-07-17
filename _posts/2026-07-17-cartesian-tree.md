@@ -24,6 +24,7 @@ The issue is that we only know how to express the left term $dp[l][m-1][a[m]]$ i
 
 Actually we don't need to fix this issue: we only need the values of $dp[l][m-1][a[m]]$ for all $l$ and $a[m] \ge 0$. Note that the sum of all such $a[m]$ is at most $n-1$ (otherwise no permutations satisfy the requirements). **More specifically, it suffices to compute** the states $dp[l][r][rem]$ that satisfy $rem \le a[r+1]$. This gives a solution with $\mathcal O(n^3)$ time and $\mathcal O(n^2)$ memory.
 
+{% raw %}
 ```cpp
 vector <int> dp[510][510];
 int dp2[510][510];
@@ -61,3 +62,4 @@ void solve(){
     cout<<dp2[1][n]<<'\n';
 }
 ```
+{% endraw %}
