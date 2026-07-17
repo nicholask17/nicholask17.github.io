@@ -5,6 +5,30 @@ gui_folder: "Upsolving"
 gui_subfolder: "CF"
 ---
 
+The key part of constructing a cartesian tree is that you maintain the current right spine (i.e. the sequence of nodes that starts with the root, and each node is the right child of the previous node in the sequence). By construction, the elements are monotonic and is thus normally maintained with a monotonic stack.
+
+When appending an element $u$, we pop the elements in the monotonic stack which are $\ge u$. We set $u$ to be the new right child of the current topmost element of the stack, and also set the popped elements to be the left child of $u$.
+
+What's interesting is that such a process can be surprisingly useful to formulate DP states, especially taking the current size of the monotonic stack as a dimension.
+
+---
+
+## CF2208E Counting Cute Arrays
+
+Consider building the min cartesian tree of the array $A$. Then $f(A)[i]$ records the parent when adding $A[i]$ into the cartesian tree. The popped elements during this process become the left subtree of the node $i$ in the cartesian tree. In particular, note that this is the only way that left subtrees could change.
+
+This means in a cute array $P$, the interval $(P[i], i)$ is precisely the left subtree of node $i$. Therefore, an equivalent condition for an array $X$ to be cute is that the list of *open* intervals $(X[i], i)$ are either pairwise disjoint or inclusive.
+
+What's left is then just DP:
+
+We first solve a subtask with $X[i]=i-1$ or $-1$ for all $i$. We let $dp[i][j]$ to be the number of ways to assign $X[1..i]$, such that after processing $X[i]$, there are exactly $j$ elements in the stack. We have $$dp[i][j] = \begin{cases} dp[i-1][j-1] & \text{if } X[i]=i-1 \\ \sum_{k \ge j-1} dp[i-1][k] & \text{if } X[i]=-1 \end{cases}$$
+
+The complete solution is then just "shrinking" each interval and reducing to the above subtask. 
+
+---
+
+## CF2245F. Familiar?
+
 Consider building the min cartesian tree of the permutation $p$. Then $count[i]$ is just the number of elements "popped out" from the stack while trying to insert $p[i]$ into the cartesian tree.
 
 The structure of the cartesian tree means that for any node $u$, it pops everything that remains in its left subtree, and $p[u]$ will remain in the stack for the entirety of its right subtree (and hence will not be popped out).
